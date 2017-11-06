@@ -98,25 +98,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         
         //let holes: [(x: Int, y: Int)] = [(0, 200), (-330, 300), (280, 175), (135, 345), (-200, 430), (100, 500), (180, 520), (-45, 375), (387, 318), (-394, 135), (-190, 206), (-318, 490), (275 ,419), (-126, 277)]
-        /*for pos in holes {
+        for pos in holes {
             let hole = SKShapeNode(circleOfRadius: CGFloat(holeRadius))
             hole.fillColor = .black
             hole.position = CGPoint(x: pos.x, y: pos.y)
-            hole.physicsBody = SKPhysicsBody(circleOfRadius: 2 * CGFloat(holeRadius) / 3)
-            hole.physicsBody?.affectedByGravity = false
-            hole.physicsBody?.categoryBitMask = BitMasks.hole
-            hole.physicsBody?.contactTestBitMask = 0
-            hole.physicsBody?.collisionBitMask = 0
-            hole.zPosition = -2
-            hole.name = "hole"
-            addChild(hole)
-            
-            self.holes.append(hole)
-        }*/
-        for i in 0..<numHoles {
-            let hole = SKShapeNode(circleOfRadius: CGFloat(holeRadius))
-            hole.fillColor = .black
-            hole.position = CGPoint(x: CGFloat(rand(low: Double(-frame.width/3), high: Double(frame.width/3))), y: CGFloat(rand(low: 120, high: Double(frame.height * 5/6))))
             hole.physicsBody = SKPhysicsBody(circleOfRadius: 2 * CGFloat(holeRadius) / 3)
             hole.physicsBody?.affectedByGravity = false
             hole.physicsBody?.categoryBitMask = BitMasks.hole
@@ -149,7 +134,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             detectors.append(detector)
         }
         
-        for i in 0..<5{
+        for _ in 0..<5{
             detectors[2].removeFromParent()
             detectors.remove(at: 2)
         }
@@ -238,7 +223,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 continue
             }
             
-            //var input = [Double(bar.zRotation / CGFloat(Double.pi / 36))]
             var input = [Double]()
             for detector in detectors {
                 detector.position = ball.position
@@ -269,21 +253,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
 
-            let output = network.feedFoward(inputs: Input(data: input))
+            let output = network.process(inputs: input)
             
-            if output.data[0] > 0.5 && bar.zRotation > -CGFloat(Double.pi / 36) {
+            if output[0] > 0.5 && bar.zRotation > -CGFloat(Double.pi / 36) {
                 bar.position.y += speed / 2
                 bar.zRotation -= atan(speed / view!.frame.width)
             }
-            if output.data[1] > 0.5 && bar.zRotation < CGFloat(Double.pi / 36) {
+            if output[1] > 0.5 && bar.zRotation < CGFloat(Double.pi / 36) {
                 bar.position.y += speed / 2
                 bar.zRotation += atan(speed / view!.frame.width)
             }
-            if output.data[0] < -0.5 && bar.zRotation > -CGFloat(Double.pi / 36) {
+            if output[0] < -0.5 && bar.zRotation > -CGFloat(Double.pi / 36) {
                 bar.position.y -= speed / 2
                 bar.zRotation -= atan(speed / view!.frame.width)
             }
-            if output.data[1] < -0.5 && bar.zRotation < CGFloat(Double.pi / 36) {
+            if output[1] < -0.5 && bar.zRotation < CGFloat(Double.pi / 36) {
                 bar.position.y -= speed / 2
                 bar.zRotation += atan(speed / view!.frame.width)
             }
