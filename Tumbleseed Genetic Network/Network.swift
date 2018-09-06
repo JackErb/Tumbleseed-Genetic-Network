@@ -16,6 +16,7 @@ func randInt(low: Int, high: Int) -> Int {
     return Int(rand(low: Double(low), high: Double(high)))
 }
 
+// These variables are used in the crossover and mutation functions to keep accurate records of the genes
 var nodeHistoryNumber = 0
 var innovationNumber = 0
 
@@ -29,6 +30,7 @@ class Network {
     
     var fitness: Double = 0.0
     
+    // When accessed, creates an array containing the "Genes" (i.e. the information) of this organism's nodes
     var nodeGenes: [NodeGene] {
         var genes = [NodeGene]()
         for node in nodes {
@@ -45,6 +47,7 @@ class Network {
         return genes.sorted { $0.nodeNumber < $1.nodeNumber }
     }
     
+    // When accessed, creates an array that contains the "Genes" (i.e. the information) of all the connections between the various nodes
     var connectionGenes: [ConnectionGene] {
         var genes = [ConnectionGene]()
         for node in nodes {
@@ -55,6 +58,7 @@ class Network {
         return genes.sorted { $0.innovationNumber < $1.innovationNumber }
     }
     
+    // Creates a base network with the specific number of inputs and outputs.
     init(numInputs: Int, numOutputs: Int) {
         for _ in 0..<numInputs {
             let node = InputNode()
@@ -69,10 +73,12 @@ class Network {
         }
     }
     
+    // Used to create an empty network in order to be modified at a later time.
     init() {
         
     }
     
+    // Given the inputs, produces the output of the network.
     func process(inputs: [Double]) -> [Double] {
         assert(inputs.count == outputNodes.count, "Input counts do not match.")
         
@@ -83,6 +89,7 @@ class Network {
         return outputNodes.map { return $0.value }
     }
     
+    // Crossovers or "breeds" two different networks, creating a child that is an amalgamation of the two parents.
     func crossover(with network: Network) -> Network {
         let child = Network(numInputs: inputNodes.count, numOutputs: outputNodes.count)
         
